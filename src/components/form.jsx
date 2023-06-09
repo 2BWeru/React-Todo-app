@@ -7,8 +7,7 @@ const Form = () => {
   });
 
   const [submittedData, setSubmittedData] = useState([]);
-  const [editIndex,setEditIndex] = useState(null);
-//   Add a new state variable to track the index of the item being edited. Initialize it as null initially. 
+  const [editIndex, setEditIndex] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,41 +16,41 @@ const Form = () => {
   const addActivity = (e) => {
     e.preventDefault();
 
-    let newData = { ...formData };
-
     if(editIndex !== null){
-        // Update existing item
-        const updatedData = [...submittedData];
-        updatedData[editIndex] = { ...formData};
-
-        setSubmittedData(submittedData);
-        setEditIndex(null)
+         // Update existing item
+    const updatedData = [ ...submittedData];
+    updatedData[editIndex] = { ...formData};
+    setSubmittedData(updatedData);
+    setEditIndex(null)
     }else{
-        // Add new item
-        setSubmittedData([ ...submittedData, newData]);
+        setSubmittedData([ ...submittedData,{ ...formData}]);
     }
-    setFormData({
-      activity:'',
-    });
+    setFormData({activity:'',});
   };
+
+  const editActivity = (index) => {
+    const itemToEdit = submittedData[index];
+    setFormData({ ...itemToEdit});
+    setEditIndex(index)
+  }
 
   const deleteActivity = (index) =>{
-      let updatedData =[...submittedData];  
-      updatedData.splice(index,1);
-      setSubmittedData(updatedData)
+    const updatedData = submittedData.filter((_, i) => i !== index);
+    setSubmittedData(updatedData);
+    if (editIndex === index) {
+      setFormData({ title: '', description: '' });
+      setEditIndex(null);
+    }
   };
 
-  const editActivity = (index) =>{
-        const editedData = submittedData[index];
-        setFormData({ ...editedData});
-        setEditIndex(index)
-  }
+
+
 
   return (
     <div className="w-full max-w-[1246px] flex flex-col justify-center mx-auto rounded-sm m-10 shadow-xl border-gray-600 m-10 space-y-4 bg-[0b010ef5] px-4 ">
       <div className="flex flex-col mx-auto py-6">
         <p className="text-2xl border-b mb-10 font-bold text-gray-200 py-6 mx-auto text-center lg:text-start">
-          What's the Plan For Today ? 
+          What's the Plan For Today !!!
         </p>
         <form className="flex flex-row" onSubmit={addActivity}>
           <input
@@ -77,13 +76,13 @@ const Form = () => {
           {submittedData.map((data,index)=>(
             <div key={index} className="flex flex-row border mb-10 space-x-4 border-gray-800 rounded-md px-6 py-6">
                 <p className="text-white font-semibold w-3/4">
-                {data.activity}!
+                {data.activity}
                 </p>
                 <div className="space-x-8 ">
-                <button onClick={deleteActivity} className="text-white bg-cyan-600 w-10 rounded-sm">
+                <button onClick={() => deleteActivity(index)} className="text-white bg-cyan-600 w-10 rounded-sm">
                     X
                 </button>
-                <button onClick={editActivity} className="text-white w-10 bg-cyan-600 rounded-sm">
+                <button onClick={()=> editActivity(index)}  className="text-white w-10 bg-cyan-600 rounded-sm">
                     !
                 </button>
                 </div>
